@@ -1,0 +1,17 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+supabase>=2.5.0           # async client (supabase-py v2)
+twilio>=9.0.0
+APScheduler>=3.10.4
+python-dotenv>=1.0.0
+
+# =========================================================
+# Frontend Requirements (Node.js)
+# =========================================================
+# The frontend uses Next.js. You do not install NPM packages
+# using python's pip or this requirements file. 
+# 
+# To install frontend dependencies, navigate to the frontend:
+# 1. cd praan_health_vp
+# 2. npm install
+httpx>=0.27.0             # supabase-py dependency
