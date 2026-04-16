@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import { BookingDialog } from "./BookingDialog";
 
 type Ctx = {
@@ -28,23 +29,30 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
   const submitted = useRef(false);
   const attemptRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pathname = usePathname();
 
   const scheduleNext = useCallback(() => {
     if (submitted.current) return;
+    if (pathname === "/session") return; // Block auto-popup on session page
     const delay =
       POPUP_DELAYS[Math.min(attemptRef.current, POPUP_DELAYS.length - 1)];
     timerRef.current = setTimeout(() => {
       if (!submitted.current) setIsOpen(true);
     }, delay);
-  }, []);
+  }, [pathname]);
 
-  // Kick off the very first popup timer on mount
+  // Kick off the popup timer, but immediately clear it if on the session page
   useEffect(() => {
+    if (pathname === "/session") {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setIsOpen(false);
+      return;
+    }
     scheduleNext();
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [scheduleNext]);
+  }, [scheduleNext, pathname]);
 
   const open = useCallback(() => setIsOpen(true), []);
 

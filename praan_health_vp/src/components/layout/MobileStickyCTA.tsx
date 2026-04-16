@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { BookingButton } from "@/components/booking/BookingButton";
 import { cn } from "@/lib/utils";
 import { site } from "@/content/site";
 
 export function MobileStickyCTA() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname === "/session") return null;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > window.innerHeight * 0.8);

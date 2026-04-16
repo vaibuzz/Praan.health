@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
@@ -11,6 +12,9 @@ import { site } from "@/content/site";
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname === "/session") return null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);

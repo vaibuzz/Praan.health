@@ -3,7 +3,7 @@ export const site = {
   tagline: "Helping parents age stronger.",
   booking: {
     href: "#book", // TODO: replace with Calendly / booking URL
-    primary: "Book Free Assessment",
+    primary: "Start My 14-Day Free Trial 🧘",
     secondary: "See how it works",
   },
   nav: [

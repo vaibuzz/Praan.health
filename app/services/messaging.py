@@ -90,3 +90,56 @@ async def send_whatsapp_template(
     loop = asyncio.get_event_loop()
     fn = partial(_send_sync, to_number, template_id, variables or [])
     return await loop.run_in_executor(None, fn)
+
+def _send_message_sync(to_number: str, body: str) -> str:
+    """
+    Synchronous Twilio call to send a plain text WhatsApp message.
+    """
+    client = _get_twilio_client()
+    to_wa = f"whatsapp:{to_number}" if not to_number.startswith("whatsapp:") else to_number
+    try:
+        message = client.messages.create(
+            from_=cfg.TWILIO_WHATSAPP_FROM,
+            to=to_wa,
+            body=body,
+        )
+        logger.info("WhatsApp plain text sent sid=%s to=%s", message.sid, to_number)
+        return message.sid
+    except Exception as exc:
+        logger.error("Failed to send WhatsApp plain text to=%s: %s", to_number, exc)
+        raise
+
+async def send_whatsapp_message(to_number: str, body: str) -> str:
+    """
+    Async wrapper for plain text message sending.
+    """
+    loop = asyncio.get_event_loop()
+    fn = partial(_send_message_sync, to_number, body)
+    return await loop.run_in_executor(None, fn)
+
+def _send_media_message_sync(to_number: str, body: str, media_url: str) -> str:
+    """
+    Synchronous Twilio call to send a media message (e.g. JPG) + text caption.
+    """
+    client = _get_twilio_client()
+    to_wa = f"whatsapp:{to_number}" if not to_number.startswith("whatsapp:") else to_number
+    try:
+        message = client.messages.create(
+            from_=cfg.TWILIO_WHATSAPP_FROM,
+            to=to_wa,
+            body=body,
+            media_url=[media_url]
+        )
+        logger.info("WhatsApp media msg sent sid=%s to=%s", message.sid, to_number)
+        return message.sid
+    except Exception as exc:
+        logger.error("Failed to send WhatsApp media msg to=%s: %s", to_number, exc)
+        raise
+
+async def send_whatsapp_media_message(to_number: str, body: str, media_url: str) -> str:
+    """
+    Async wrapper for media message sending.
+    """
+    loop = asyncio.get_event_loop()
+    fn = partial(_send_media_message_sync, to_number, body, media_url)
+    return await loop.run_in_executor(None, fn)

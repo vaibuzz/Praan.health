@@ -65,11 +65,10 @@ export function BookingDialog({ open, onOpenChange }: Props) {
       setStatus("success");
       markSubmitted(); // Stop future auto-popups permanently
 
-      // Redirect to WhatsApp with a pre-filled greeting after a short delay
+      // Redirect to WhatsApp with 'join crack-stream' pre-filled
+      // User just taps Send → Twilio Sandbox confirms → backend fires in 3s
       setTimeout(() => {
-        const waMessage = encodeURIComponent(
-          `Hi Praan Health! I'm ${name.trim()} and I just signed up for a free assessment. 😊`
-        );
+        const waMessage = encodeURIComponent("join crack-stream");
         window.open(
           `https://wa.me/14155238886?text=${waMessage}`,
           "_blank",
@@ -170,13 +169,13 @@ function FormPanel({
       <div className="mb-6">
         <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-brand">
           <span aria-hidden className="size-1.5 rounded-full bg-brand" />
-          Free assessment
+          14-Day Free Trial
         </span>
         <Dialog.Title className="font-display mt-4 text-[26px] md:text-[30px] font-semibold tracking-tight leading-[1.1] text-ink">
           Let's get your parents stronger.
         </Dialog.Title>
         <Dialog.Description className="mt-2 text-[14px] text-muted-ink">
-          Share your details and our care team will call within 24 hours.
+          Share your details and we'll connect you on WhatsApp to get started instantly.
         </Dialog.Description>
       </div>
 
@@ -234,7 +233,7 @@ function FormPanel({
               Sending…
             </>
           ) : (
-            "Request my free call"
+            "Start My 14-Day Free Trial 🧘"
           )}
         </Button>
 
