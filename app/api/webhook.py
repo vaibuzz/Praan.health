@@ -57,6 +57,14 @@ async def handle_twilio_webhook(
     name = user.get("name", "friend")
     logger.info("Webhook from %s | action='%s'", user_phone, action_id)
 
+    # 0. HANDLE INBOUND INITIAL MESSAGE (User clicked the frontend WhatsApp link)
+    if "Hi Praan Health" in action_id or action_id.lower() in ["hi", "hello"]:
+        background_tasks.add_task(
+            send_whatsapp_template, user_phone, "tpl_welcome", {"2": name}
+        )
+        await update_user_step(db, user_phone, "welcome_sent")
+        return Response(content=TWIML_OK, media_type="text/xml")
+
     # 1. HANDLE STEP 1 -> STEP 2 (Welcome -> Batch Selector)
     if action_id == "onboarding_step_2":
         import asyncio
