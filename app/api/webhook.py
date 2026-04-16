@@ -86,6 +86,18 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
     tpl_welcome_sid = os.getenv("TPL_WELCOME")
     if tpl_welcome_sid:
         await send_whatsapp_template(user_phone, tpl_welcome_sid, [])
+
+    # ── Step 3: TPL_BATCH_1_IMAGE — 10s gap ──────────────────────────────
+    await asyncio.sleep(10.0)
+    tpl_batch_1_sid = os.getenv("TPL_BATCH_1_IMAGE")
+    if tpl_batch_1_sid:
+        await send_whatsapp_template(user_phone, tpl_batch_1_sid, [])
+
+    # ── Step 4: TPL_BATCH_2_LIST — 7s gap ────────────────────────────────
+    await asyncio.sleep(7.0)
+    tpl_batch_2_sid = os.getenv("TPL_BATCH_2_LIST")
+    if tpl_batch_2_sid:
+        await send_whatsapp_template(user_phone, tpl_batch_2_sid, [])
     
     if user:
         await update_user_step(db, user_phone, "batch_selection")
