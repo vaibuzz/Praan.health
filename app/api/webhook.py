@@ -79,25 +79,45 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
         f"Your 14-Day FREE YOGA Journey\n"
         f"Starts {dynamic_date} 😄🧘"
     )
-    await send_whatsapp_message(user_phone, msg_welcome)
+    try:
+        await send_whatsapp_message(user_phone, msg_welcome)
+    except Exception as e:
+        logger.error("Phase A: failed to send welcome text: %s", e)
 
-    # ── Step 2: TPL_WELCOME — 5s gap ──────────────────────────────
-    await asyncio.sleep(5.0)
-    tpl_welcome_sid = os.getenv("TPL_WELCOME")
-    if tpl_welcome_sid:
-        await send_whatsapp_template(user_phone, tpl_welcome_sid, [])
+    # ── Step 2: Backend media (Namaste text + image) — 0s gap ────────────
+    msg_namaste = (
+        f"Namaste {name} Ji! 🙏✨\n"
+        "Welcome to the Praan Health family! 🌿\n\n"
+        "We are honored to guide you through your 14-Day Senior Strength & Mobility Trial. 🚶‍♂️💪 \n"
+        "Our physician-backed program is designed to gently reduce joint pain, improve your balance, \n"
+        "and help you move with confidence. 🌈🧘‍♂️\n\n"
+        "Your journey to a healthier, pain-free life starts right now! 🌼🌞\n"
+        "---\n"
+        "Praan Health - Care for your parents."
+    )
+    hero_image_url = "https://raw.githubusercontent.com/vaibuzz/Loan-approval-ML-project-/main/WhatsApp%20Image%202026-04-17%20at%2012.23.24%20AM.jpeg"
+    try:
+        await send_whatsapp_media_message(user_phone, msg_namaste, hero_image_url)
+    except Exception as e:
+        logger.error("Phase A: failed to send Namaste media message: %s", e)
 
-    # ── Step 3: TPL_BATCH_1_IMAGE — 10s gap ──────────────────────────────
-    await asyncio.sleep(10.0)
+    # ── Step 2: TPL_BATCH_1_IMAGE — 10s gap ──────────────────────────────
+    await asyncio.sleep(8.0)
     tpl_batch_1_sid = os.getenv("TPL_BATCH_1_IMAGE")
     if tpl_batch_1_sid:
-        await send_whatsapp_template(user_phone, tpl_batch_1_sid, [])
+        try:
+            await send_whatsapp_template(user_phone, tpl_batch_1_sid, [])
+        except Exception as e:
+            logger.error("Phase A: failed to send TPL_BATCH_1_IMAGE: %s", e)
 
-    # ── Step 4: TPL_BATCH_2_LIST — 7s gap ────────────────────────────────
-    await asyncio.sleep(7.0)
+    # ── Step 3: TPL_BATCH_2_LIST — 7s gap ────────────────────────────────
+    await asyncio.sleep(6.0)
     tpl_batch_2_sid = os.getenv("TPL_BATCH_2_LIST")
     if tpl_batch_2_sid:
-        await send_whatsapp_template(user_phone, tpl_batch_2_sid, [])
+        try:
+            await send_whatsapp_template(user_phone, tpl_batch_2_sid, [])
+        except Exception as e:
+            logger.error("Phase A: failed to send TPL_BATCH_2_LIST: %s", e)
     
     if user:
         await update_user_step(db, user_phone, "batch_selection")
@@ -263,8 +283,8 @@ async def handle_twilio_webhook(
     user = await get_user(db, user_phone)
 
     # ── PHASE A: JOIN ─────────────────────────────────────────────────────
-    if action_id.lower() == "join crack-stream":
-        logger.info("PHASE A | %s | Join Flow initiated", user_phone)
+    if action_id.lower() == "join crack-stream" or (user and user.get("current_step") == "registered"):
+        logger.info("PHASE A | %s | Join Flow initiated (action=%s)", user_phone, action_id)
         background_tasks.add_task(_phase_a_join, user_phone, db, user)
         return Response(content=TWIML_OK, media_type="text/xml")
 
