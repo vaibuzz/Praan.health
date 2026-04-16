@@ -81,30 +81,12 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
     )
     await send_whatsapp_message(user_phone, msg_welcome)
 
-    # ── Step 2: Backend media (Namaste text + image) — 0s gap ────────────
-    msg_namaste = (
-        f"Namaste {name} Ji! 🙏✨\n"
-        "Welcome to the Praan Health family! 🌿\n\n"
-        "We are honored to guide you through your 14-Day Senior Strength & Mobility Trial. 🚶‍♂️💪 \n"
-        "Our physician-backed program is designed to gently reduce joint pain, improve your balance, \n"
-        "and help you move with confidence. 🌈🧘‍♂️\n\n"
-        "Your journey to a healthier, pain-free life starts right now! 🌼🌞\n"
-        "---\n"
-        "Praan Health - Care for your parents."
-    )
-    hero_image_url = "https://raw.githubusercontent.com/vaibuzz/Loan-approval-ML-project-/main/WhatsApp%20Image%202026-04-17%20at%2012.23.24%20AM.jpeg"
-    await send_whatsapp_media_message(user_phone, msg_namaste, hero_image_url)
-
-    # ── Step 3: TPL_BATCH_1_IMAGE — 10s gap ──────────────────────────────
-    await asyncio.sleep(10.0)
-    tpl_batch_1_sid = os.getenv("TPL_BATCH_1_IMAGE")
-    await send_whatsapp_template(user_phone, tpl_batch_1_sid, [])
-
-    # ── Step 4: TPL_BATCH_2_LIST — 7s gap ────────────────────────────────
-    await asyncio.sleep(7.0)
-    tpl_batch_2_sid = os.getenv("TPL_BATCH_2_LIST")
-    await send_whatsapp_template(user_phone, tpl_batch_2_sid, [])
-
+    # ── Step 2: TPL_WELCOME — 5s gap ──────────────────────────────
+    await asyncio.sleep(5.0)
+    tpl_welcome_sid = os.getenv("TPL_WELCOME")
+    if tpl_welcome_sid:
+        await send_whatsapp_template(user_phone, tpl_welcome_sid, [])
+    
     if user:
         await update_user_step(db, user_phone, "batch_selection")
 
