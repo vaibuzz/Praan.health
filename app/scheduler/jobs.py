@@ -66,7 +66,7 @@ async def push_morning_1() -> None:
         tasks.append(send_whatsapp_template(
             to_number=u["phone_number"],
             template_id="tpl_morning_reminder",
-            variables={"2": u.get("name", "friend"), "3": "6:30 AM", "4": focus}
+            variables={"1": "Morning", "2": u.get("name", "friend"), "3": "6:30 AM", "4": focus}
         ))
         
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -97,7 +97,7 @@ async def push_morning_2() -> None:
             tasks.append(send_whatsapp_template(
                 to_number=phone,
                 template_id="tpl_morning_reminder",
-                variables={"2": u.get("name", "friend"), "3": "7:30 AM", "4": focus}
+                variables={"1": "Morning", "2": u.get("name", "friend"), "3": "7:30 AM", "4": focus}
             ))
             notified_count += 1
             
@@ -122,7 +122,7 @@ async def push_evening_1() -> None:
         tasks.append(send_whatsapp_template(
             to_number=u["phone_number"],
             template_id="tpl_evening_reminder",
-            variables={"2": u.get("name", "friend"), "3": "5:00 PM", "4": focus}
+            variables={"1": "Evening", "2": u.get("name", "friend"), "3": "5:00 PM", "4": focus}
         ))
         
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -153,7 +153,7 @@ async def push_evening_2() -> None:
             tasks.append(send_whatsapp_template(
                 to_number=phone,
                 template_id="tpl_evening_reminder",
-                variables={"2": u.get("name", "friend"), "3": "6:00 PM", "4": focus}
+                variables={"1": "Evening", "2": u.get("name", "friend"), "3": "6:00 PM", "4": focus}
             ))
             notified_count += 1
             
@@ -257,37 +257,37 @@ def create_scheduler() -> AsyncIOScheduler:
     """
     scheduler = AsyncIOScheduler(timezone=str(cfg.IST))
 
-    # 06:15 AM IST
+    # 06:20 AM IST
     scheduler.add_job(
         push_morning_1,
-        CronTrigger(hour=6, minute=15, timezone=cfg.IST),
+        CronTrigger(hour=6, minute=20, timezone=cfg.IST),
         id="push_morning_1",
         name="Morning Session 1 Reminder",
         replace_existing=True,
     )
 
-    # 07:15 AM IST
+    # 07:20 AM IST
     scheduler.add_job(
         push_morning_2,
-        CronTrigger(hour=7, minute=15, timezone=cfg.IST),
+        CronTrigger(hour=7, minute=20, timezone=cfg.IST),
         id="push_morning_2",
         name="Morning Session 2 Reminder",
         replace_existing=True,
     )
 
-    # 04:45 PM IST
+    # 04:50 PM IST
     scheduler.add_job(
         push_evening_1,
-        CronTrigger(hour=16, minute=45, timezone=cfg.IST),
+        CronTrigger(hour=16, minute=50, timezone=cfg.IST),
         id="push_evening_1",
         name="Evening Session 1 Reminder",
         replace_existing=True,
     )
 
-    # 05:45 PM IST
+    # 05:50 PM IST
     scheduler.add_job(
         push_evening_2,
-        CronTrigger(hour=17, minute=45, timezone=cfg.IST),
+        CronTrigger(hour=17, minute=50, timezone=cfg.IST),
         id="push_evening_2",
         name="Evening Session 2 Reminder",
         replace_existing=True,

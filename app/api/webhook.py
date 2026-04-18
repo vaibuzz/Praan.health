@@ -84,43 +84,18 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
     except Exception as e:
         logger.error("Phase A: failed to send welcome text: %s", e)
 
-    # ── Step 2: Backend media (Namaste text + image) — 0s gap ────────────
-    msg_namaste = (
-        f"Namaste {name} Ji! 🙏✨\n"
-        "Welcome to the Praan Health family! 🌿\n\n"
-        "We are honored to guide you through your 14-Day Senior Strength & Mobility Trial. 🚶‍♂️💪 \n"
-        "Our physician-backed program is designed to gently reduce joint pain, improve your balance, \n"
-        "and help you move with confidence. 🌈🧘‍♂️\n\n"
-        "Your journey to a healthier, pain-free life starts right now! 🌼🌞\n"
-        "---\n"
-        "Praan Health - Care for your parents."
-    )
-    hero_image_url = "https://raw.githubusercontent.com/vaibuzz/Loan-approval-ML-project-/main/WhatsApp%20Image%202026-04-17%20at%2012.23.24%20AM.jpeg"
-    try:
-        await send_whatsapp_media_message(user_phone, msg_namaste, hero_image_url)
-    except Exception as e:
-        logger.error("Phase A: failed to send Namaste media message: %s", e)
-
-    # ── Step 2: TPL_BATCH_1_IMAGE — 10s gap ──────────────────────────────
-    await asyncio.sleep(8.0)
-    tpl_batch_1_sid = os.getenv("TPL_BATCH_1_IMAGE")
-    if tpl_batch_1_sid:
+    # ── Step 2: Twilio Template (Namaste + Button) — 0s gap ──────────────
+    tpl_namaste_sid = os.getenv("TPL_NAMASTE_WELCOME")
+    if tpl_namaste_sid:
         try:
-            await send_whatsapp_template(user_phone, tpl_batch_1_sid, [])
+            # We pass [name] in case your new template uses {{1}} for the user's name
+            await send_whatsapp_template(user_phone, tpl_namaste_sid, [name])
         except Exception as e:
-            logger.error("Phase A: failed to send TPL_BATCH_1_IMAGE: %s", e)
+            logger.error("Phase A: failed to send Namaste Twilio template: %s", e)
 
-    # ── Step 3: TPL_BATCH_2_LIST — 7s gap ────────────────────────────────
-    await asyncio.sleep(6.0)
-    tpl_batch_2_sid = os.getenv("TPL_BATCH_2_LIST")
-    if tpl_batch_2_sid:
-        try:
-            await send_whatsapp_template(user_phone, tpl_batch_2_sid, [])
-        except Exception as e:
-            logger.error("Phase A: failed to send TPL_BATCH_2_LIST: %s", e)
-    
     if user:
-        await update_user_step(db, user_phone, "batch_selection")
+        # Pause flow here. Button click "_onboarding_step_2" will trigger Phase B.
+        await update_user_step(db, user_phone, "onboarding_step_1")
 
         # ── Referral notification ─────────────────────────────────────────
         # If this user was referred by someone, notify the referrer
@@ -326,7 +301,7 @@ async def handle_twilio_webhook(
         reply_text = replies.get(action_id, "Thank you for the feedback!")
         tpl_feedback_reply_sid = os.getenv("TPL_FEEDBACK_REPLY")
         background_tasks.add_task(
-            send_whatsapp_template, user_phone, tpl_feedback_reply_sid, [reply_text]
+            send_whatsapp_template, user_phone, tpl_feedback_reply_sid, {"1": reply_text}
         )
 
     return Response(content=TWIML_OK, media_type="text/xml")
