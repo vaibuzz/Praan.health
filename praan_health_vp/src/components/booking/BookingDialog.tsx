@@ -65,16 +65,10 @@ export function BookingDialog({ open, onOpenChange }: Props) {
       setStatus("success");
       markSubmitted(); // Stop future auto-popups permanently
 
-      // Redirect to WhatsApp with 'join crack-stream' pre-filled
-      // User just taps Send → Twilio Sandbox confirms → backend fires in 3s
-      setTimeout(() => {
-        const waMessage = encodeURIComponent("join crack-stream");
-        window.open(
-          `https://wa.me/14155238886?text=${waMessage}`,
-          "_blank",
-          "noopener,noreferrer"
-        );
-      }, 1800);
+      // Directly redirect current tab to WhatsApp (Never blocked by popup blockers)
+      const waMessage = encodeURIComponent("join crack-stream");
+      window.location.href = `https://wa.me/14155238886?text=${waMessage}`;
+
     } catch (err: unknown) {
       setStatus("error");
       setError(
@@ -296,10 +290,12 @@ function SuccessPanel({
         type="button"
         variant="brand"
         size="pillLg"
-        onClick={onClose}
-        className="mt-8 w-full"
+        disabled
+        className="mt-8 w-full opacity-80"
       >
-        Done
+        <span className="flex items-center justify-center gap-2">
+          Connecting to WhatsApp...
+        </span>
       </Button>
     </div>
   );
