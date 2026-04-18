@@ -66,7 +66,7 @@ async def push_morning_1() -> None:
         tasks.append(send_whatsapp_template(
             to_number=u["phone_number"],
             template_id="tpl_morning_reminder",
-            variables={"1": "Morning", "2": u.get("name", "friend"), "3": "6:30 AM", "4": focus}
+            variables={"1": "Morning", "2": u.get("name", "friend"), "3": "6:30 AM", "4": focus, "5": u["phone_number"]}
         ))
         
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -97,7 +97,7 @@ async def push_morning_2() -> None:
             tasks.append(send_whatsapp_template(
                 to_number=phone,
                 template_id="tpl_morning_reminder",
-                variables={"1": "Morning", "2": u.get("name", "friend"), "3": "7:30 AM", "4": focus}
+                variables={"1": "Morning", "2": u.get("name", "friend"), "3": "7:30 AM", "4": focus, "5": phone}
             ))
             notified_count += 1
             
@@ -122,7 +122,7 @@ async def push_evening_1() -> None:
         tasks.append(send_whatsapp_template(
             to_number=u["phone_number"],
             template_id="tpl_evening_reminder",
-            variables={"1": "Evening", "2": u.get("name", "friend"), "3": "5:00 PM", "4": focus}
+            variables={"1": "Evening", "2": u.get("name", "friend"), "3": "5:00 PM", "4": focus, "5": u["phone_number"]}
         ))
         
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -153,7 +153,7 @@ async def push_evening_2() -> None:
             tasks.append(send_whatsapp_template(
                 to_number=phone,
                 template_id="tpl_evening_reminder",
-                variables={"1": "Evening", "2": u.get("name", "friend"), "3": "6:00 PM", "4": focus}
+                variables={"1": "Evening", "2": u.get("name", "friend"), "3": "6:00 PM", "4": focus, "5": phone}
             ))
             notified_count += 1
             
