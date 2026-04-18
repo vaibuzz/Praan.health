@@ -84,14 +84,21 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
     except Exception as e:
         logger.error("Phase A: failed to send welcome text: %s", e)
 
-    # ── Step 2: Twilio Template (Namaste + Button) — 0s gap ──────────────
-    tpl_namaste_sid = os.getenv("TPL_NAMASTE_WELCOME")
-    if tpl_namaste_sid:
-        try:
-            # Safely provide both keys in case Twilio requires {{1}} instead of {{2}}
-            await send_whatsapp_template(user_phone, tpl_namaste_sid, {"1": name, "2": name})
-        except Exception as e:
-            logger.error("Phase A: failed to send Namaste Twilio template: %s", e)
+    # ── Step 2: Namaste plain text welcome (sent as plain text to avoid
+    # Twilio de-duplicating it against the identical TPL_WELCOME SID)  ───────
+    namaste_text = (
+        f"Namaste {name} Ji! 🙏✨\n"
+        "Welcome to the Praan Health family! 🌿\n\n"
+        "We are honored to guide you through your 14-Day Senior Strength & Mobility Trial. 🚶‍♂️💪\n"
+        "Our physician-backed program is designed to gently reduce joint pain, improve your balance,\n"
+        "and help you move with confidence. 🌈🧘‍♂️\n\n"
+        "Your journey to a healthier, pain-free life starts right now! 🌼🌞"
+    )
+    try:
+        await asyncio.sleep(1.0)
+        await send_whatsapp_message(user_phone, namaste_text)
+    except Exception as e:
+        logger.error("Phase A: failed to send Namaste plain text: %s", e)
 
     if user:
         # Pause flow here. Button click "_onboarding_step_2" will trigger Phase B.

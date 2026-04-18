@@ -30,11 +30,12 @@ async def get_user(db: AsyncClient, phone_number: str) -> dict | None:
 
 
 async def get_active_trial_users(db: AsyncClient) -> list[dict]:
-    """Return all users on the trial plan who haven't exceeded day 14."""
+    """Return all trial users who have completed onboarding and are within day 14."""
     res = (
         await db.table("users")
         .select("*")
         .eq("account_type", "trial")
+        .eq("current_step", "onboarding_complete")
         .lte("trial_day", 14)
         .execute()
     )
