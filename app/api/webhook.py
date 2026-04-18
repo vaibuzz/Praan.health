@@ -88,8 +88,8 @@ async def _phase_a_join(user_phone: str, db, user: dict | None):
     tpl_namaste_sid = os.getenv("TPL_NAMASTE_WELCOME")
     if tpl_namaste_sid:
         try:
-            # We pass [name] in case your new template uses {{1}} for the user's name
-            await send_whatsapp_template(user_phone, tpl_namaste_sid, [name])
+            # Safely provide both keys in case Twilio requires {{1}} instead of {{2}}
+            await send_whatsapp_template(user_phone, tpl_namaste_sid, {"1": name, "2": name})
         except Exception as e:
             logger.error("Phase A: failed to send Namaste Twilio template: %s", e)
 
