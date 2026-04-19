@@ -146,6 +146,14 @@ async def register_user(req: SignupRequest, background_tasks: BackgroundTasks):
 
 
 # ---------------------------------------------------------------------------
+# Root probe (used by cron-job.org keep-alive)
+# ---------------------------------------------------------------------------
+@app.get("/", tags=["Meta"])
+async def root():
+    return {"status": "Praan Health Backend is Live and Healthy"}
+
+
+# ---------------------------------------------------------------------------
 # Health probe
 # ---------------------------------------------------------------------------
 @app.get("/health", tags=["Meta"])
