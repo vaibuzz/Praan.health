@@ -159,12 +159,4 @@ async def root():
 # ---------------------------------------------------------------------------
 @app.get("/health", tags=["Meta"])
 async def health_check():
-    from datetime import datetime
-    from app.core.config import IST
-    return {
-        "status": "ok",
-        "ist_time": datetime.now(IST).isoformat(),
-        "scheduler_jobs": [
-            {"id": j.id, "next_run": str(j.next_run_time)} for j in _scheduler.get_jobs()
-        ],
-    }
+    return "OK"
