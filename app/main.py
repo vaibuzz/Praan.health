@@ -151,7 +151,7 @@ async def register_user(req: SignupRequest, background_tasks: BackgroundTasks):
 # ---------------------------------------------------------------------------
 @app.get("/", tags=["Meta"])
 async def root():
-    return {"status": "Praan Health Backend is Live and Healthy"}
+    return "OK"
 
 
 # ---------------------------------------------------------------------------
