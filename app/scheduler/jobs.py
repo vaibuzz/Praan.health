@@ -264,6 +264,7 @@ def create_scheduler() -> AsyncIOScheduler:
         id="push_morning_1",
         name="Morning Session 1 Reminder",
         replace_existing=True,
+        misfire_grace_time=7200,
     )
 
     # 07:20 AM IST
@@ -273,6 +274,7 @@ def create_scheduler() -> AsyncIOScheduler:
         id="push_morning_2",
         name="Morning Session 2 Reminder",
         replace_existing=True,
+        misfire_grace_time=7200,
     )
 
     # 04:50 PM IST
@@ -282,6 +284,7 @@ def create_scheduler() -> AsyncIOScheduler:
         id="push_evening_1",
         name="Evening Session 1 Reminder",
         replace_existing=True,
+        misfire_grace_time=7200,
     )
 
     # 05:50 PM IST
@@ -291,6 +294,7 @@ def create_scheduler() -> AsyncIOScheduler:
         id="push_evening_2",
         name="Evening Session 2 Reminder",
         replace_existing=True,
+        misfire_grace_time=7200,
     )
 
     # 09:00 PM IST
@@ -300,6 +304,7 @@ def create_scheduler() -> AsyncIOScheduler:
         id="attendance_check",
         name="Attendance Check & Feedback",
         replace_existing=True,
+        misfire_grace_time=7200,
     )
 
     # 00:00 AM IST (midnight)

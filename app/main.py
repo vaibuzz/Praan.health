@@ -20,7 +20,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import join, webhook
+from app.api import join, triggers, webhook
 from app.core.database import get_supabase
 from app.scheduler.jobs import create_scheduler
 
@@ -86,6 +86,7 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 app.include_router(webhook.router, tags=["Twilio Webhook"])
 app.include_router(join.router, tags=["Attendance"])
+app.include_router(triggers.router)
 
 
 from pydantic import BaseModel
